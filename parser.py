@@ -2,7 +2,7 @@ import argparse
 
 def parse_input():
     prompt = ""
-    file   = "sdpg.json"
+    file   = "prompt_scheme.json"
 
     parser = argparse.ArgumentParser(description='Stable Diffusion prompt generator helper.')
 
