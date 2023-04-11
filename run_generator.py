@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import openai
 import parser
 import helper
 
@@ -20,11 +21,12 @@ def main_menu():
         print(i, item)
         keys.append(item)
     separator()
+    print("[s] subject")
     print("[g] generate")
     print("[q] quit")
     separator()
 
-    return input("> Please select category:\n> ")
+    return input("[*] Please select category:\n> ")
 
 def sub_menu(index):
     clear()
@@ -32,7 +34,7 @@ def sub_menu(index):
     for i, item in enumerate(data[index].keys()):
         print(i, item, " - ", data[index][item])
         if (i + 1) % 20 == 0:
-            request = input("--- Press any key to continue or 'q' to quit ---")
+            request = input("--- Press any key to continue or 'q' to quit --- ")
             if request == 'q':
                 break
             clear()
@@ -42,11 +44,39 @@ def sub_menu(index):
     print("[q] quit")
     separator()
 
-    return input("> Please select item:\n> ")
+    return input("[*] Please select item:\n> ")
 
+def get_subject(apikey):
+    clear()
+    helper.decorate_title("subject".upper())
+
+    print("API:", apikey)
+    if apikey == None:
+        subject = input("[*] Please write subject of prompt:\n> ")
+    else:
+        subject = input("[*] Do you want to ask GPT for subject?\n(type 'y' to confirm, otherwise enter your prompt): \n> ")
+
+        if subject == 'y':
+            openai.api_key = apikey
+
+            model = "gpt-3.5-turbo"
+            msg = [
+                {
+                  "role": "user",
+                  "content": "Create a subject for a prompt for AI image generator Stable Diffusion. It should be one sentence and no longer than 7 words."
+                }
+            ]
+
+            print("[+] Waiting for GPT response...")
+            response = openai.ChatCompletion.create(model=model, messages=msg)
+            subject = response.choices[0].message.content
+            subject = subject.strip('"')
+
+    return subject
 ################################################################################
+# Main
 
-prompt, filename = parser.parse_input()
+prompt, filename, apikey = parser.parse_input()
 
 if filename == None:
     filename = "prompt_scheme.json"
@@ -63,7 +93,16 @@ except Exception as e:
 finally:
     f.close()
 
+if apikey == None:
+    try:
+        with open("openai.key","r") as apifile:
+            apikey = apifile.read().strip()
+    except FileNotFoundError:
+      print(f"[-] Failed to open openai.key")
+      print("[!] Not using OpenAI API")
+
 new_prompt = {}
+subject = "<SUBJECT NOT SET>"
 
 if prompt == None:
 
@@ -80,8 +119,10 @@ if prompt == None:
                 prompt = ""
                 for item in new_prompt.values():
                     prompt += item + ", "
-                print("\n", prompt)
-                input("\n> Press any key to continue...")
+                print("\n", subject + ",", prompt)
+            elif category == 's':
+                subject = get_subject(apikey)
+                print("[+] Subject set to:", subject)
             else:
                 while True:
                     requested = sub_menu(keys[int(category)])
@@ -100,12 +141,11 @@ if prompt == None:
                         for i, item in enumerate(data[category_key]):
                             if i == int(requested):
                                 new_prompt[category_key] = item
+                                print(f"[+] Category '{category_key}' set to: {item}")
                                 break
-                        input("\n> Press any key to continue...")
+                        #input("\n> Press any key to continue...")
                         break
-                    else:
-                        print("AAAAAAAA")
-                    input("\n> Press any key to continue...")
+            input("\n> Press any key to continue...")
         except KeyboardInterrupt:
             print("[!] Program interrupted. Quitting...")
             break
