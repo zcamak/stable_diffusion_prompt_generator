@@ -50,7 +50,6 @@ def get_subject(apikey):
     clear()
     helper.decorate_title("subject".upper())
 
-    print("API:", apikey)
     if apikey == None:
         subject = input("[*] Please write subject of prompt:\n> ")
     else:
