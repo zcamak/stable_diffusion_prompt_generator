@@ -10,7 +10,7 @@ subject     = "<SUBJECT NOT SET>"
 filename, prompt, apikey = m.parser.parse_input()
 
 if  prompt != None:
-    functions.decorate_title("PROMPT:")
+    m.functions.decorate_title("PROMPT:")
     print("\n", prompt)
     sys.exit()
 
@@ -39,6 +39,6 @@ while True:
         print("[!] Quitting...")
         break
     except ValueError:
-        functions.decorate_title("ERROR")
+        m.functions.decorate_title("ERROR")
         print("[-] Please provide correct value")
         input("\n> Press any key to continue...")
