@@ -17,10 +17,14 @@ if  prompt != None:
 data    = m.functions.load_scheme(filename)
 apikey  = m.functions.load_apikey(apikey)
 
+menu = {
+    "main": m.classes.MainMenu("category")
+}
+
 while True:
     try:
         keys = []
-        category = m.functions.main_menu(data, keys)
+        category = menu["main"].display(data, keys)
 
         if  category == 'q':
             raise KeyboardInterrupt
