@@ -14,6 +14,6 @@ def prompt_gpt(apikey):
     print("[+] Waiting for GPT response...")
     response = openai.ChatCompletion.create(model=model, messages=msg)
     subject = response.choices[0].message.content
-    subject = subject.strip('"')
+    subject = subject.strip('",.?!')
 
     return subject
