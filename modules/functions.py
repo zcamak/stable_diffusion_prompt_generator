@@ -52,35 +52,3 @@ def load_apikey(apikey):
             print("[!] Not using OpenAI API")
 
     return apikey
-
-def handle_category(data, keys, category, new_prompt):
-    while True:
-        requested = "a" #sub_menu(data, keys[int(category)])
-
-        if  requested == 'q':
-            print("[+] Going back...")
-            break
-
-        if  requested.isnumeric() == False:
-            continue
-
-        datalength = len(data[keys[int(category)]]) 
-
-        if  int(requested) >= datalength:
-            print(f"[-] Invalid number (max: {datalength})")
-            input("\n> Press any key to continue...")
-            continue
-            
-        category_key = keys[int(category)]
-
-        for i, item in enumerate(data[category_key]):
-            if  i != int(requested):
-                continue
-
-            new_prompt[category_key] = item
-            print(f"[+] Category '{category_key}' set to: {item}")
-            break
-        break
-
-    input("\n> Press any key to continue...")
-
