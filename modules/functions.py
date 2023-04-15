@@ -1,7 +1,6 @@
 import os
 import json
 import sys
-from . import gpt
 
 ################################################################################
 # Constants
@@ -54,70 +53,9 @@ def load_apikey(apikey):
 
     return apikey
 
-def main_menu(data, keys):
-    clear()
-    decorate_title("Category:")
-    for i, item in enumerate(data.keys()):
-        print(i, item)
-        keys.append(item)
-    separator()
-    print("[s] subject")
-    print("[g] generate")
-    print("[q] quit")
-    separator()
-
-    return input("[*] Please select category:\n> ")
-
-def sub_menu(data, index):
-    clear()
-    decorate_title(index.upper())
-    for i, item in enumerate(data[index].keys()):
-        print(i, item, " - ", data[index][item])
-        if  (i + 1) % 20 == 0:
-            request = input("--- Press any key to continue or 'q' to quit --- ")
-            if  request == 'q':
-                break
-            clear()
-            decorate_title(index.upper())
-
-    separator()
-    print("[q] quit")
-    separator()
-
-    return input("[*] Please select item:\n> ")
-
-def get_subject(apikey):
-    clear()
-    decorate_title("subject".upper())
-
-    if  apikey == None:
-        subject = input("[*] Please write subject of prompt:\n> ")
-    else:
-        decision = input("[*] Do you want to ask GPT for subject?\n"
-                         "(type 'y' to confirm or enter your prompt): \n> ")
-
-        subject = gpt.prompt_gpt(apikey) if decision == 'y' else decision
-
-    print("[+] Subject set to:", subject)
-    input("\n> Press any key to continue...")
-
-    return subject
-
-def generate_prompt(subject, new_prompt):
-    prompt = ""
-    decorate_title("PROMPT:")
-
-    for item in new_prompt.values():
-        prompt += item + ", "
-
-    print("\n", subject + ",", prompt)
-    input("\n> Press any key to continue...")
-
-    return prompt
-
 def handle_category(data, keys, category, new_prompt):
     while True:
-        requested = sub_menu(data, keys[int(category)])
+        requested = "a" #sub_menu(data, keys[int(category)])
 
         if  requested == 'q':
             print("[+] Going back...")

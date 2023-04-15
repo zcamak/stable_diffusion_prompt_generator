@@ -4,9 +4,6 @@ import modules as m
 ################################################################################
 # Main
 
-new_prompt  = {}
-subject     = "<SUBJECT NOT SET>"
-
 filename, prompt, apikey = m.parser.parse_input()
 
 if  prompt != None:
@@ -18,26 +15,28 @@ data    = m.functions.load_scheme(filename)
 apikey  = m.functions.load_apikey(apikey)
 
 menu = {
-    "main": m.classes.MainMenu("category")
+    "main": m.classes.MainMenu("category"),
+    "sub":  m.classes.SubMenu("XXXXXX")
+}
+
+pack = {
+    'apikey': apikey,
+    'data':   data,
+    'keys':   [ item for item in data.keys() ],
+    'prompt': {
+        'generated': "",
+        'subject': "<SUBJECT NOT SET>"
+    }
 }
 
 while True:
     try:
-        keys = []
-        category = menu["main"].display(data, keys)
-
-        if  category == 'q':
-            raise KeyboardInterrupt
-
-        if  category == 'g':
-            prompt = m.functions.generate_prompt(subject, new_prompt)
+        selected = menu["main"].run(pack)
+        if not selected:
             continue
 
-        if  category == 's':
-            subject = m.functions.get_subject(apikey)
-            continue
-
-        m.functions.handle_category(data, keys, category, new_prompt)
+        menu["sub"].run(pack, selected)
+        #m.functions.handle_category(data, keys, category, new_prompt)
 
     except KeyboardInterrupt:
         print("[!] Quitting...")
