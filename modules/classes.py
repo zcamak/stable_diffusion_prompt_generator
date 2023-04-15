@@ -1,4 +1,3 @@
-import random
 from abc import ABC, abstractmethod
 from . import functions
 from . import gpt
@@ -61,72 +60,18 @@ class MainMenu(Menu):
             raise KeyboardInterrupt
 
         if  option == 'g':
-            self.generate_prompt(pack['prompt'], "PROMPT")
+            functions.generate_prompt(pack['prompt'], "PROMPT")
             return ""
 
         if  option == 's':
-            self.set_subject(pack['apikey'], pack['prompt'])
+            functions.set_subject(pack['apikey'], pack['prompt'])
             return ""
 
         if  option == 'r':
-            self.generate_random(pack)
+            functions.generate_random(pack)
             return ""
 
         return option
-
-    def set_subject(self, apikey, prompt):
-        functions.clear()
-        functions.decorate_title("subject".upper())
-
-        if  apikey == None:
-            subject = input("[*] Please write subject of prompt:\n> ")
-        else:
-            decision = input("[*] Do you want to ask GPT for subject?\n"
-                            "(type 'y' to confirm or enter your prompt): \n> ")
-
-            subject = gpt.prompt_gpt(apikey) if decision == 'y' else decision
-
-        prompt['subject'] = subject
-
-        print("[+] Subject set to:", subject)
-        input("\n> Press any key to continue...")
-
-    def generate_prompt(self, prompt, title):
-        functions.decorate_title(title)
-
-        prompt['generated'] = ""
-
-        for item in prompt.values():
-            if not item:
-                continue
-            prompt['generated'] += item + ", "
-
-        print("\n" + prompt['generated'])
-        input("\n> Press any key to continue...")
-
-    def generate_random(self, pack):
-        functions.clear()
-
-        data   = pack['data']
-        prompt = pack['prompt']
-
-        if pack['apikey']:
-            prompt['subject'] = gpt.prompt_gpt(pack['apikey'])
-
-        prompt['generated'] = ""
-
-        for category in pack['keys']:
-            max   = len(data[category])
-            index = random.randint(0, max - 1)
-
-            for i, item in enumerate(data[category]):
-                if i != int(index):
-                    continue
-
-                prompt[category] = item
-                break
-
-        self.generate_prompt(prompt, "RANDOM PROMPT")
 
 #----------------------------------------
 class SubMenu(Menu):

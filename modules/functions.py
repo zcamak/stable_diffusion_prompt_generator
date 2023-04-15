@@ -1,6 +1,8 @@
 import os
 import json
 import sys
+import random
+from . import gpt
 
 ################################################################################
 # Constants
@@ -52,3 +54,57 @@ def load_apikey(apikey):
             print("[!] Not using OpenAI API")
 
     return apikey
+
+def set_subject(apikey, prompt):
+    clear()
+    decorate_title("subject".upper())
+
+    if  apikey == None:
+        subject = input("[*] Please write subject of prompt:\n> ")
+    else:
+        decision = input("[*] Do you want to ask GPT for subject?\n"
+                        "(type 'y' to confirm or enter your prompt): \n> ")
+
+        subject = gpt.prompt_gpt(apikey) if decision == 'y' else decision
+
+    prompt['subject'] = subject
+
+    print("[+] Subject set to:", subject)
+    input("\n> Press any key to continue...")
+
+def generate_prompt(prompt, title):
+    decorate_title(title)
+
+    prompt['generated'] = ""
+
+    for item in prompt.values():
+        if not item:
+            continue
+        prompt['generated'] += item + ", "
+
+    print("\n" + prompt['generated'])
+    input("\n> Press any key to continue...")
+
+def generate_random(pack):
+    clear()
+
+    data   = pack['data']
+    prompt = pack['prompt']
+
+    if pack['apikey']:
+        prompt['subject'] = gpt.prompt_gpt(pack['apikey'])
+
+    prompt['generated'] = ""
+
+    for category in pack['keys']:
+        max   = len(data[category])
+        index = random.randint(0, max - 1)
+
+        for i, item in enumerate(data[category]):
+            if i != int(index):
+                continue
+
+            prompt[category] = item
+            break
+
+    generate_prompt(prompt, "RANDOM PROMPT")
