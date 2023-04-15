@@ -1,6 +1,9 @@
 import openai
 
-def prompt_gpt(apikey):
+def prompt_gpt(apikey, decorate=True):
+    if decorate:
+        print("[+] Waiting for GPT response...")
+
     model = "gpt-3.5-turbo"
     msg = [
         {
@@ -11,7 +14,6 @@ def prompt_gpt(apikey):
 
     openai.api_key = apikey
 
-    print("[+] Waiting for GPT response...")
     response = openai.ChatCompletion.create(model=model, messages=msg)
     subject = response.choices[0].message.content
     subject = subject.strip('",.?!')

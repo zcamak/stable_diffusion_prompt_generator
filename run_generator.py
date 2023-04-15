@@ -5,7 +5,7 @@ import modules as m
 # Main
 
 def load_data():
-    filename, prompt, apikey = m.parser.parse_input()
+    filename, prompt, apikey, random = m.parser.parse_input()
 
     if  prompt != None:
         m.functions.decorate_title("PROMPT:")
@@ -25,7 +25,7 @@ def load_data():
         }
     }
 
-    return pack
+    return pack, random
 
 def create_menus():
     menu = {
@@ -54,6 +54,11 @@ def main_loop(menu, pack):
             input("\n> Press any key to continue...")
 
 if __name__ == "__main__":
-    pack = load_data()
+    pack, random = load_data()
+
+    if random:
+        m.functions.generate_random(pack, decorate=False, confirm=False)
+        sys.exit()
+
     menu = create_menus()
     main_loop(menu, pack)

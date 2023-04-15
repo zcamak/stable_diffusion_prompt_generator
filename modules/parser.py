@@ -6,9 +6,10 @@ def parse_input():
     parser.add_argument('-p', '--prompt', type=str, help='User provided prompt')
     parser.add_argument('-f', '--file', type=str, help='File used as base for prompt generation')
     parser.add_argument('-k', '--key', type=str, help='OpenAI API key for GPT')
+    parser.add_argument('-r', '--random', action="store_true", help='Generate random prompt')
 
     args = parser.parse_args()
 
     args.file = "prompt_scheme.json" if args.file == None else args.file
 
-    return  args.file, args.prompt, args.key
+    return  args.file, args.prompt, args.key, args.random

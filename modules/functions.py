@@ -72,8 +72,9 @@ def set_subject(apikey, prompt):
     print("[+] Subject set to:", subject)
     input("\n> Press any key to continue...")
 
-def generate_prompt(prompt, title):
-    decorate_title(title)
+def generate_prompt(prompt, title, decorate=True, confirm=True):
+    if decorate:
+        decorate_title(title)
 
     prompt['generated'] = ""
 
@@ -83,16 +84,19 @@ def generate_prompt(prompt, title):
         prompt['generated'] += item + ", "
 
     print("\n" + prompt['generated'])
-    input("\n> Press any key to continue...")
 
-def generate_random(pack):
-    clear()
+    if confirm:
+        input("\n> Press any key to continue...")
+
+def generate_random(pack, decorate=True, confirm=True):
+    if decorate:
+        clear()
 
     data   = pack['data']
     prompt = pack['prompt']
 
     if pack['apikey']:
-        prompt['subject'] = gpt.prompt_gpt(pack['apikey'])
+        prompt['subject'] = gpt.prompt_gpt(pack['apikey'], decorate)
 
     prompt['generated'] = ""
 
@@ -107,4 +111,4 @@ def generate_random(pack):
             prompt[category] = item
             break
 
-    generate_prompt(prompt, "RANDOM PROMPT")
+    generate_prompt(prompt, "RANDOM PROMPT", decorate, confirm)
