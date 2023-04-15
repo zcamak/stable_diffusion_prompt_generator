@@ -1,4 +1,4 @@
-import inspect
+import random
 from abc import ABC, abstractmethod
 from . import functions
 from . import gpt
@@ -52,6 +52,7 @@ class MainMenu(Menu):
         functions.separator()
         print("[s] subject")
         print("[g] generate")
+        print("[r] random")
         print("[q] quit")
         functions.separator()
 
@@ -60,11 +61,15 @@ class MainMenu(Menu):
             raise KeyboardInterrupt
 
         if  option == 'g':
-            self.generate_prompt(pack['prompt'])
+            self.generate_prompt(pack['prompt'], "PROMPT")
             return ""
 
         if  option == 's':
             self.set_subject(pack['apikey'], pack['prompt'])
+            return ""
+
+        if  option == 'r':
+            self.generate_random(pack)
             return ""
 
         return option
@@ -86,8 +91,8 @@ class MainMenu(Menu):
         print("[+] Subject set to:", subject)
         input("\n> Press any key to continue...")
 
-    def generate_prompt(self, prompt):
-        functions.decorate_title("PROMPT:")
+    def generate_prompt(self, prompt, title):
+        functions.decorate_title(title)
 
         prompt['generated'] = ""
 
@@ -98,6 +103,30 @@ class MainMenu(Menu):
 
         print("\n" + prompt['generated'])
         input("\n> Press any key to continue...")
+
+    def generate_random(self, pack):
+        functions.clear()
+
+        data   = pack['data']
+        prompt = pack['prompt']
+
+        if pack['apikey']:
+            prompt['subject'] = gpt.prompt_gpt(pack['apikey'])
+
+        prompt['generated'] = ""
+
+        for category in pack['keys']:
+            max   = len(data[category])
+            index = random.randint(0, max - 1)
+
+            for i, item in enumerate(data[category]):
+                if i != int(index):
+                    continue
+
+                prompt[category] = item
+                break
+
+        self.generate_prompt(prompt, "RANDOM PROMPT")
 
 #----------------------------------------
 class SubMenu(Menu):
@@ -115,7 +144,7 @@ class SubMenu(Menu):
         self.__title = keys[int(index)]
 
         while True:
-            self.display(data)#, keys[(int(index))])
+            self.display(data)
             option = input("[*] Please select item:\n> ")
 
             if  option == 'q':
