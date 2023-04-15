@@ -143,7 +143,7 @@ class SubMenu(Menu):
                 functions.decorate_title(category.upper())
 
         functions.separator()
-        print("[q] quit")
+        print("[q] back")
         functions.separator()
 
     def handle_input(self, pack, index, option):

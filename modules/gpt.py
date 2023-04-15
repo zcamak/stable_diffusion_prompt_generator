@@ -5,7 +5,7 @@ def prompt_gpt(apikey):
     msg = [
         {
           "role": "user",
-          "content": "Create a subject for a prompt for AI image generator Stable Diffusion. It should be one sentence and no longer than 7 words."
+          "content": "Create a subject for a prompt for AI image generator Stable Diffusion. It should be one sentence and no longer than 10 words."
         }
     ]
 
