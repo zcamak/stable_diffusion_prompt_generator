@@ -109,11 +109,13 @@ class SubMenu(Menu):
         return self.__title
 
     def run(self, pack, index):
-        while True:
-            keys   = pack['keys']
-            data   = pack['data']
+        keys   = pack['keys']
+        data   = pack['data']
 
-            self.display(data, keys[(int(index))])
+        self.__title = keys[int(index)]
+
+        while True:
+            self.display(data)#, keys[(int(index))])
             option = input("[*] Please select item:\n> ")
 
             if  option == 'q':
@@ -126,7 +128,9 @@ class SubMenu(Menu):
             break
         input("\n> Press any key to continue...")
 
-    def display(self, data, category):
+    def display(self, data):
+        category = self.get_classname()
+
         functions.clear()
         functions.decorate_title(category.upper())
         for i, item in enumerate(data[category].keys()):

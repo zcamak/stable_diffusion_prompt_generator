@@ -4,44 +4,56 @@ import modules as m
 ################################################################################
 # Main
 
-filename, prompt, apikey = m.parser.parse_input()
+def load_data():
+    filename, prompt, apikey = m.parser.parse_input()
 
-if  prompt != None:
-    m.functions.decorate_title("PROMPT:")
-    print("\n", prompt)
-    sys.exit()
+    if  prompt != None:
+        m.functions.decorate_title("PROMPT:")
+        print("\n", prompt)
+        sys.exit()
 
-data    = m.functions.load_scheme(filename)
-apikey  = m.functions.load_apikey(apikey)
+    data    = m.functions.load_scheme(filename)
+    apikey  = m.functions.load_apikey(apikey)
 
-menu = {
-    "main": m.classes.MainMenu("category"),
-    "sub":  m.classes.SubMenu("XXXXXX")
-}
-
-pack = {
-    'apikey': apikey,
-    'data':   data,
-    'keys':   [ item for item in data.keys() ],
-    'prompt': {
-        'generated': "",
-        'subject': "<SUBJECT NOT SET>"
+    pack = {
+        'apikey': apikey,
+        'data':   data,
+        'keys':   [ item for item in data.keys() ],
+        'prompt': {
+            'generated': "",
+            'subject': "<SUBJECT NOT SET>"
+        }
     }
-}
 
-while True:
-    try:
-        selected = menu["main"].run(pack)
-        if not selected:
-            continue
+    return pack
 
-        menu["sub"].run(pack, selected)
-        #m.functions.handle_category(data, keys, category, new_prompt)
+def create_menus():
+    menu = {
+        "main": m.classes.MainMenu("category"),
+        "sub":  m.classes.SubMenu("submenu")
+    }
 
-    except KeyboardInterrupt:
-        print("[!] Quitting...")
-        break
-    except ValueError:
-        m.functions.decorate_title("ERROR")
-        print("[-] Please provide correct value")
-        input("\n> Press any key to continue...")
+    return menu
+
+def main_loop(menu, pack):
+    while True:
+        try:
+            selected = menu["main"].run(pack)
+
+            if not selected:
+                continue
+
+            menu["sub"].run(pack, selected)
+
+        except KeyboardInterrupt:
+            print("[!] Exiting...")
+            break
+        except ValueError:
+            m.functions.decorate_title("ERROR")
+            print("[-] Please provide correct value")
+            input("\n> Press any key to continue...")
+
+if __name__ == "__main__":
+    pack = load_data()
+    menu = create_menus()
+    main_loop(menu, pack)

@@ -10,6 +10,12 @@ MAX_LENGTH = 40
 ################################################################################
 # Functions
 
+def separator():
+    print("-" * MAX_LENGTH)
+
+def clear():
+    os.system("cls" if  os.name == "nt" else "clear")
+ 
 def decorate_title(title):
     length = len(title)
     diff   = MAX_LENGTH - length
@@ -21,13 +27,7 @@ def decorate_title(title):
     print("#" * MAX_LENGTH)
     print("#" + " " * diff + title + " " * (diff + additional)+ "#")
     print("#" * MAX_LENGTH)
-
-def separator():
-    print("-" * MAX_LENGTH)
-
-def clear():
-    os.system("cls" if  os.name == "nt" else "clear")
-    
+   
 def load_scheme(filename):
     try:
         with open(filename, "r") as f:
